@@ -2,20 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:todo_app_firebase/constant/color_constant.dart';
 import 'package:todo_app_firebase/data/auth_data.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key, this.show});
+class SignUpScreen extends StatefulWidget {
+  const SignUpScreen({super.key, this.show});
   final VoidCallback? show;
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<SignUpScreen> createState() => _SignUpScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _SignUpScreenState extends State<SignUpScreen> {
   FocusNode _focusNodeEmail = FocusNode();
   FocusNode _focusNodePassword = FocusNode();
+  FocusNode _focusNodeConfirmPassword = FocusNode();
 
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  TextEditingController passwordConfirmController = TextEditingController();
 
   @override
   void initState() {
@@ -24,8 +26,11 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() {});
     });
 
-    super.initState();
     _focusNodePassword.addListener(() {
+      setState(() {});
+    });
+
+    _focusNodeConfirmPassword.addListener(() {
       setState(() {});
     });
   }
@@ -33,7 +38,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColors,
+      backgroundColor: const Color(0xffF5F5F5),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -44,9 +49,11 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(height: 10),
             textfield(controller: passwordController, focusNode: _focusNodePassword, typeName: 'Password', iconData: Icons.lock),
             const SizedBox(height: 10),
+            textfield(controller: passwordConfirmController, focusNode: _focusNodeConfirmPassword, typeName: 'Confirm Password', iconData: Icons.lock),
+            const SizedBox(height: 10),
             account(),
             const SizedBox(height: 20),
-            loginButton()
+            signUpButton(),
           ],
         ),
       ),
@@ -60,44 +67,44 @@ class _LoginScreenState extends State<LoginScreen> {
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           Text(
-            "Don't have an account?",
+            "Do you have an account?",
             style: TextStyle(color: Colors.grey[700], fontSize: 14),
           ),
           const SizedBox(width: 5),
           GestureDetector(
             onTap: widget.show,
             child: const Text(
-              "Sign UP",
-              style: TextStyle(color: Colors.blue, fontSize: 14, fontWeight: FontWeight.bold),
+              "Login",
+              style: TextStyle(
+                color: Colors.blue,
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
+          )
         ],
       ),
     );
   }
 
-  Widget loginButton() {
+  Widget signUpButton() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: GestureDetector(
         onTap: () {
-          AuthenticationRemote().login(emailController.text, passwordController.text);
+          AuthenticationRemote().register(emailController.text, passwordController.text, passwordConfirmController.text);
         },
         child: Container(
           alignment: Alignment.center,
           width: double.infinity,
           height: 50,
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
             color: custom_green,
+            borderRadius: BorderRadius.circular(10),
           ),
           child: const Text(
-            "LogIn",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 23,
-              fontWeight: FontWeight.bold,
-            ),
+            "Sign Up",
+            style: TextStyle(color: Colors.white, fontSize: 23, fontWeight: FontWeight.bold),
           ),
         ),
       ),
@@ -108,10 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 15),
       child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(15),
-        ),
+        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
         child: TextField(
           controller: controller,
           focusNode: focusNode,
@@ -125,10 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
             hintText: typeName,
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
-              borderSide: const BorderSide(
-                color: Color(0xffc5c5c5),
-                width: 2,
-              ),
+              borderSide: const BorderSide(color: Color(0xffc5c5c5), width: 2),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
@@ -148,10 +149,7 @@ class _LoginScreenState extends State<LoginScreen> {
         height: 300,
         decoration: BoxDecoration(
           color: backgroundColors,
-          image: const DecorationImage(
-            image: AssetImage("assets/images/login.png"),
-            fit: BoxFit.fitWidth,
-          ),
+          image: const DecorationImage(image: AssetImage("assets/images/login.png"), fit: BoxFit.fitWidth),
         ),
       ),
     );
